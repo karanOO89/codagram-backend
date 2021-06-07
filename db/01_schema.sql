@@ -25,7 +25,7 @@ CREATE TABLE posts(
   updated_at TIMESTAMP,
   total_likes INTEGER,
   total_comments INTEGER,
-  -- FOREIGN KEY (parent_post_id) INTEGER REFERENCES
+  parent_post_id INTEGER
 );
 
 CREATE TABLE post_likes (
@@ -49,7 +49,7 @@ CREATE TABLE post_comments (
 CREATE TABLE user_followers (
   id SERIAL PRIMARY KEY NOT NULL,
   FOREIGN KEY (user_id) INTEGER REFERENCES users(id),
-  -- follower_id INTEGER REFERENCES,
+  follower_id INTEGER,
   updated_at TIMESTAMP,
   created TIMESTAMP
 );
@@ -66,8 +66,8 @@ CREATE TABLE messages (
 
 CREATE TABLE dm_rooms (
   id SERIAL PRIMARY KEY NOT NULL,
-  -- user1_id INTEGER REFERENCES,
-  -- user2_id INTEGER REFERENCES,
+  FOREIGN KEY (user1_id) INTEGER REFERENCES users(id),
+  FOREIGN KEY (user2_id) INTEGER REFERENCES users(id),
   created_at TIMESTAMP,
   updated_at TIMESTAMP
 );
