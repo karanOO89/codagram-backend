@@ -11,9 +11,8 @@ CREATE TABLE users (
   id SERIAL PRIMARY KEY NOT NULL,
   name VARCHAR(255) NOT NULL,
   email VARCHAR(255) NOT NULL,
-  created_at TIMESTAMP,
-  updated_at TIMESTAMP,
-  created TIMESTAMP,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
   avatar_url VARCHAR(255) NOT NULL
 );
 
@@ -21,8 +20,8 @@ CREATE TABLE posts(
   id SERIAL PRIMARY KEY NOT NULL,
   user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
   type VARCHAR(255) NOT NULL,
-  created_at TIMESTAMP,
-  updated_at TIMESTAMP,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
   total_likes INTEGER,
   total_comments INTEGER,
   parent_post_id INTEGER
@@ -32,8 +31,8 @@ CREATE TABLE post_likes (
   id SERIAL PRIMARY KEY NOT NULL,
   user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
   post_id INTEGER REFERENCES posts(id) ON DELETE CASCADE,
-  created_at TIMESTAMP,
-  updated_at TIMESTAMP
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE post_comments (
@@ -41,8 +40,8 @@ CREATE TABLE post_comments (
   user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
   post_id INTEGER REFERENCES posts(id) ON DELETE CASCADE,
   comments VARCHAR(255) NOT NULL,
-  created_at TIMESTAMP,
-  updated_at TIMESTAMP
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 
@@ -50,16 +49,16 @@ CREATE TABLE user_followers (
   id SERIAL PRIMARY KEY NOT NULL,
   user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
   follower_id INTEGER,
-  updated_at TIMESTAMP,
-  created TIMESTAMP
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  created TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE dm_rooms (
   id SERIAL PRIMARY KEY NOT NULL,
   user1_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
   user2_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-  created_at TIMESTAMP,
-  updated_at TIMESTAMP
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE messages (
@@ -67,8 +66,8 @@ CREATE TABLE messages (
   user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
   dm_room_id INTEGER REFERENCES dm_rooms(id) ON DELETE CASCADE,
   msg VARCHAR(255) NOT NULL,
-  created_at TIMESTAMP,
-  updated_at TIMESTAMP
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 
