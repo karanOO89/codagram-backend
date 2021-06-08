@@ -1,13 +1,16 @@
 require("dotenv").config();
 const express = require("express");
+const fileUpload = require('express-fileupload');
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
 const app = express();
+// const fileupload = require(express-fileupload)
 const { Pool } = require('pg');
 const client = require('./db/db');
 const db = new Pool(client);
 db.connect();
+app.use(fileUpload());
 
 // const { Pool } = require('pg');
 // const dbParams = require('./lib/db.js');
@@ -27,11 +30,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // simple route
-
+// app.use(fileupload())
 
 // Respond to POST request on the root route (/), the application’s home page:
 
 const postsRoutes = require("./routes/posts");
+// const imageUploadRoutes = require("./routes/posts");
 // const productRoutes = require("./routes/products");
 // const widgetsRoutes = require("./routes/widgets");
 // const loginRoutes = require("./routes/login");
@@ -39,8 +43,8 @@ const postsRoutes = require("./routes/posts");
 // const viewRoutes = require("./routes/view");
 // const heartRoutes = require("./routes/heart");
 
-console.log("post routes ",postsRoutes);
 app.use("/post", postsRoutes(db));
+// app.use("/image-upload", postsRoutes(db));
 
 // app.use("/products", productRoutes(db));
 // app.use("/api/widgets", widgetsRoutes(db));
