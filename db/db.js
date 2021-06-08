@@ -14,11 +14,11 @@ if (process.env.DATABASE_URL) {
     database: process.env.DB_NAME
   };
 
-const client = new Client(dbParams);
+  const client = new Client(dbParams);
 
-client.connect(() => {
-  console.log('connected to database');
-});
+  client.connect(() => {
+    console.log('connected to database');
+  });
 }
 
 module.exports = dbParams;
