@@ -18,12 +18,12 @@ module.exports = (db) => {
   });
 
   router.post("/", (req, res) => {
-    console.log("bodyyyyyyyy", req.body);
     let sampleFile;
     let uploadPath;
     //Trying to capture all the files and put them into some kind of ARRAY
-    const image_path = [];
-    if (Array.isArray(req.files.images)) {
+    let image_path = [];
+
+    if (req.files && req.files.images && Array.isArray(req.files.images)) {
       req.files.images.map((image) => {
         sampleFile = image;
 
@@ -33,21 +33,22 @@ module.exports = (db) => {
           if (err) return res.status(500).send(err);
         });
       });
-    } else {
+    } else if (req.files && req.files.images) {
       sampleFile = req.files["images"];
-      console.log("samplefile............", sampleFile);
-
       uploadPath = path.join(__dirname, "../", "uploads/", sampleFile.name);
       image_path.push(sampleFile.name);
       sampleFile.mv(uploadPath, function (err) {
         if (err) return res.status(500).send(err);
       });
+    } else {
+      image_path = null;
     }
 
     //Trying to capture all the files and put them into some kind of ARRAY
     const post = req.body.message;
     const tags = JSON.stringify(req.body.tags);
-    const newImagePath = JSON.stringify(image_path);
+    const newImagePath = image_path ? JSON.stringify(image_path) : "null" ;
+    console.log("jsxxxxxxxxxxx".newImagePath);
 
     let query = `INSERT INTO posts
                   (user_id, image_url,tags, post_text, total_likes,total_comments, parent_post_id)
