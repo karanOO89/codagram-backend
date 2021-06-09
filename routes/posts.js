@@ -1,13 +1,24 @@
 const { json } = require("body-parser");
+const { timeStamp } = require("console");
 const express = require("express");
 const path = require("path");
 const router = express.Router();
 
 module.exports = (db) => {
-  router.get("/", (req, res) => {});
+  router.get("/", (req, res) => {
+    let select_query = `SELECT * FROM posts;`;
+    db.query(select_query)
+      .then((data) => {
+        res.status(200).json(data.rows);
+      })
+      .catch((err) => {
+        console.log("error:", err);
+        res.status(500).json({ error: err.message });
+      });
+  });
 
   router.post("/", (req, res) => {
-    console.log("bodyyyyyyyy",req.body);
+    console.log("bodyyyyyyyy", req.body);
     let sampleFile;
     let uploadPath;
     //Trying to capture all the files and put them into some kind of ARRAY
@@ -40,13 +51,14 @@ module.exports = (db) => {
 
     let query = `INSERT INTO posts
                   (user_id, image_url,tags, post_text, total_likes,total_comments, parent_post_id)
-                  VALUES($1,$2,$3,$4,$5,$6,$7)`;
+                  VALUES($1,$2,$3,$4,$5,$6,$7) 
+                  returning *`;
 
     const values = [1, newImagePath, tags, post, 5, 5, 1];
 
     db.query(query, values)
-      .then(() => {
-        res.status(200).json({ message: "record inserted" });
+      .then((data) => {
+        res.status(200).json(data.rows[0]);
       })
       .catch((err) => {
         console.log("error:", err);
