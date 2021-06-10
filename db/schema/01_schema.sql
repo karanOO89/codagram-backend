@@ -27,7 +27,7 @@ CREATE TABLE posts(
   code TEXT,
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
-  total_likes INTEGER,
+  favourite BOOLEAN DEFAULT NULL,
   total_comments INTEGER,
   parent_post_id INTEGER
 );

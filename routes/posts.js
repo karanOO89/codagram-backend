@@ -5,6 +5,50 @@ const path = require("path");
 const router = express.Router();
 
 module.exports = (db) => {
+  router.get("/:id/fav", (req, res) => {
+    post_id = req.params.id;
+    let select_query = `SELECT favourite FROM posts 
+                        WHERE id = $1;`;
+
+    const values = [post_id];
+
+    db.query(select_query,values)
+      .then((data) => {
+        // console.log("rowsssssssssss",(data.rows[0]))
+
+        res.status(200).json(data.rows[0]);
+      })
+      .catch((err) => {
+        console.log("error:", err);
+        res.status(500).json({ error: err.message });
+      });
+  });
+
+  router.put("/:id/fav", (req, res) => {
+    console.log("hey", req.body);
+    console.log(req.params.id);
+    post_id = req.params.id;
+    fav_val = req.body.status;
+
+    let select_query = `UPDATE posts 
+                        Set favourite = $2 
+                        WHERE id = $1
+                        returning favourite ;`;
+
+    const values = [post_id, fav_val];
+
+    db.query(select_query, values)
+      .then((data) => {
+        // console.log("rowsssssssssss", data.rows[0]);
+
+        res.status(200).json(data.rows);
+      })
+      .catch((err) => {
+        console.log("error:", err);
+        res.status(500).json({ error: err.message });
+      });
+  });
+
   router.get("/", (req, res) => {
     let select_query = `SELECT * FROM posts;`;
 
@@ -20,22 +64,29 @@ module.exports = (db) => {
       });
   });
 
-  router.post("/", (req, res) => {
+  router.post("/", async (req, res) => {
     let sampleFile;
     let uploadPath;
     //Trying to capture all the files and put them into some kind of ARRAY
     let image_path = [];
 
     if (req.files && req.files.images && Array.isArray(req.files.images)) {
-      req.files.images.map((image) => {
+      for (const image of req.files.images) {
         sampleFile = image;
 
-        uploadPath = path.join(__dirname, "../", "uploads/", sampleFile.name);
+        uploadPath = path.join(
+          __dirname,
+          "../",
+          "public/uploads/",
+          sampleFile.name
+        );
         image_path.push(sampleFile.name);
-        sampleFile.mv(uploadPath, function (err) {
-          if (err) return res.status(500).send(err);
-        });
-      });
+        try {
+          await sampleFile.mv(uploadPath);
+        } catch (err) {
+          return res.status(500).send(err);
+        }
+      }
     } else if (req.files && req.files.images) {
       sampleFile = req.files["images"];
       uploadPath = path.join(
@@ -45,9 +96,11 @@ module.exports = (db) => {
         sampleFile.name
       );
       image_path.push(sampleFile.name);
-      sampleFile.mv(uploadPath, function (err) {
-        if (err) return res.status(500).send(err);
-      });
+      try {
+        await sampleFile.mv(uploadPath);
+      } catch (err) {
+        return res.status(500).send(err);
+      }
     } else {
       image_path = null;
     }
@@ -59,17 +112,18 @@ module.exports = (db) => {
     const newImagePath = image_path ? JSON.stringify(image_path) : "null";
 
     let query = `INSERT INTO posts
-                  (user_id, image_url,tags, post_text, code,total_likes,total_comments, parent_post_id)
-                  VALUES($1,$2,$3,$4,$5,$6,$7,$8) 
+                  (user_id, image_url,tags, post_text, code,total_comments, parent_post_id)
+                  VALUES($1,$2,$3,$4,$5,$6,$7) 
                   returning *`;
 
-    const values = [1, newImagePath, tags, post, code, 5, 5, 1];
+    const values = [1, newImagePath, tags, post, code, 5, 1];
 
     db.query(query, values)
       .then((data) => {
         res.status(200).json(data.rows[0]);
       })
       .catch((err) => {
+        console.log("error3");
         console.log("error:", err);
         res.status(500).json({ error: err.message });
       });
@@ -77,8 +131,6 @@ module.exports = (db) => {
 
   return router;
 };
-
-
 
 // let tempImage = image_path;
 // let myString = "";
