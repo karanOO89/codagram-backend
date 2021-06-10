@@ -11,6 +11,7 @@ const client = require('./db/db');
 const db = new Pool(client);
 db.connect();
 app.use(fileUpload());
+app.use(express.static('public'))
 
 // const { Pool } = require('pg');
 // const dbParams = require('./lib/db.js');
@@ -35,15 +36,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Respond to POST request on the root route (/), the application’s home page:
 
 const postsRoutes = require("./routes/posts");
-// const imageUploadRoutes = require("./routes/posts");
-// const productRoutes = require("./routes/products");
-// const widgetsRoutes = require("./routes/widgets");
-// const loginRoutes = require("./routes/login");
-// const uploadRoutes = require("./routes/upload");
-// const viewRoutes = require("./routes/view");
-// const heartRoutes = require("./routes/heart");
+const commentsRoutes = require("./routes/comments");
+
 
 app.use("/post", postsRoutes(db));
+app.use("/comment", commentsRoutes(db));
 // app.use("/image-upload", postsRoutes(db));
 
 // app.use("/products", productRoutes(db));
