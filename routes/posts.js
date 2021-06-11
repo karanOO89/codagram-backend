@@ -106,25 +106,29 @@ module.exports = (db) => {
     }
     // console.log(uploadPath);
     //Trying to capture all the files and put them into some kind of ARRAY
+    // console.log("hey")
+
     const post = req.body.message;
     const code = req.body.code;
     const tags = JSON.stringify(req.body.tags);
     const newImagePath = image_path ? JSON.stringify(image_path) : "null";
+    const redirect_code = req.body.redirect_code;
 
     let query = `INSERT INTO posts
-                  (user_id, image_url,tags, post_text, code,total_comments, parent_post_id)
-                  VALUES($1,$2,$3,$4,$5,$6,$7) 
+                  (user_id, image_url,tags, post_text, code,redirect_code,total_comments)
+                  VALUES($1,$2,$3,$4,$5,$6,$7)                  
                   returning *`;
 
-    const values = [1, newImagePath, tags, post, code, 5, 1];
+    const values = [2, newImagePath, tags, post, code,redirect_code, 5 ];
 
     db.query(query, values)
       .then((data) => {
+        // console.log(data.rows[0])
         res.status(200).json(data.rows[0]);
       })
       .catch((err) => {
-        console.log("error3");
-        console.log("error:", err);
+        // console.log("error3");
+        // console.log("error:", err);
         res.status(500).json({ error: err.message });
       });
   });

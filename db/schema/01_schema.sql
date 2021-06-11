@@ -25,11 +25,12 @@ CREATE TABLE posts(
   tags VARCHAR(255),
   post_text TEXT NOT NULL,
   code TEXT,
+  redirect_code TEXT,
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
   favourite BOOLEAN DEFAULT NULL,
   total_comments INTEGER,
-  parent_post_id INTEGER
+  parent_post_id INTEGER NULL
 );
 
 CREATE TABLE post_likes (
@@ -76,6 +77,14 @@ CREATE TABLE messages (
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
+CREATE TABLE fork_posts (
+  id SERIAL PRIMARY KEY NOT NULL,
+  user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  post_id INTEGER REFERENCES posts(id) ON DELETE CASCADE,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
 
 -- CREATE TABLE tags (
 --   id SERIAL PRIMARY KEY NOT NULL,
