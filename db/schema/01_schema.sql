@@ -5,18 +5,19 @@ DROP TABLE IF EXISTS post_likes CASCADE;
 DROP TABLE IF EXISTS post_comments CASCADE;
 DROP TABLE IF EXISTS dm_rooms CASCADE;
 DROP TABLE IF EXISTS messages CASCADE;
+DROP TABLE IF EXISTS fork_posts CASCADE;
 
 
 
 
--- CREATE TABLE users (
---   id SERIAL PRIMARY KEY NOT NULL,
---   name VARCHAR(255) NOT NULL,
---   email VARCHAR(255) NOT NULL,
---   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
---   updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
---   avatar_url VARCHAR(255) NOT NULL
--- );
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  avatar_url VARCHAR(255) NOT NULL
+);
 
 CREATE TABLE posts(
   id SERIAL PRIMARY KEY NOT NULL,
@@ -30,7 +31,8 @@ CREATE TABLE posts(
   updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
   favourite BOOLEAN DEFAULT NULL,
   total_comments INTEGER,
-  parent_post_id INTEGER NULL
+  parent_post_id INTEGER NULL,
+  search_vector TSVECTOR
 );
 
 CREATE TABLE post_likes (
@@ -44,7 +46,7 @@ CREATE TABLE post_comments (
   id SERIAL PRIMARY KEY NOT NULL,
   user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
   post_id INTEGER REFERENCES posts(id) ON DELETE CASCADE,
-  comment VARCHAR(255) NOT NULL,
+  comment TEXT NOT NULL,
   code TEXT,
   image_url VARCHAR(255),
   votes SMALLINT NOT NULL DEFAULT 0,

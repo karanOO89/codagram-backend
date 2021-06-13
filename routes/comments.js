@@ -9,9 +9,9 @@ module.exports = (db) => {
     let select_query = `SELECT * FROM post_comments
                         WHERE post_id = $1 ;`;
     values = [id]
-    db.query(select_query,values)
+    db.query(select_query,values) 
       .then((data) => {
-        // console.log("rowsssssssssss",(data.rows[0]["image_url"]))
+        // console.log("rowsssssssssss",(data.rows))
 
         res.status(200).json(data.rows);
       })
@@ -22,7 +22,7 @@ module.exports = (db) => {
   });
   router.post("/:id", (req, res) => {
 
-    console.log(req.files)
+    // console.log(req.files)
     let sampleFile;
     let uploadPath;
     //     //Trying to capture all the files and put them into some kind of ARRAY
@@ -85,6 +85,30 @@ module.exports = (db) => {
       .then((data) => {
         // console.log("hey there its then ")
        res.status(200).json(data.rows[0]);
+      })
+      .catch((err) => {
+        console.log("error:", err);
+       res.status(500).json({ error: err.message });
+      });
+  });
+  router.put("/:id", async(req, res) => {
+
+    // console.log(req.body,req.params)
+    
+    const vote = req.body.vote;
+    const comment_id = Number(req.params.id);
+
+    let query = `UPDATE post_comments 
+                 SET votes = $1
+                 WHERE id = $2
+                 returning *`;
+
+    const values = [vote,comment_id];
+
+    await db.query(query, values)
+      .then((data) => {
+        // console.log("hey there its then ")
+       res.status(200).json(data.rows[0]["votes"]);
       })
       .catch((err) => {
         console.log("error:", err);

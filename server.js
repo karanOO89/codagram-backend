@@ -30,47 +30,19 @@ app.use(bodyParser.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// simple route
-// app.use(fileupload())
 
-// Respond to POST request on the root route (/), the application’s home page:
 
 const postsRoutes = require("./routes/posts");
 const commentsRoutes = require("./routes/comments");
+const searchRoutes = require("./routes/search");
+
 
 
 app.use("/post", postsRoutes(db));
 app.use("/comment", commentsRoutes(db));
-// app.use("/image-upload", postsRoutes(db));
-
-// app.use("/products", productRoutes(db));
-// app.use("/api/widgets", widgetsRoutes(db));
-// app.use("/upload", uploadRoutes(db));
-// app.use("/heart", heartRoutes(db));
-// app.use("/login", loginRoutes(db));
-
-// app.post("/post", (req, res) => {
-//   console.log("data",req.body)
-//   res.json({ message: "Welcome to Codagram application." });
-//  });
+app.use("/search", searchRoutes(db));
 
 
-
-
-
-
-
-
-// // Respond to a PUT request to the /user route:
-// app.put('/user', function (req, res) {
-//   res.json(res.data)
-// })
-// // Respond to a DELETE request to the /user route:
-// app.delete('/user', function (req, res) {
-//   res.json('Got a DELETE request at /user')
-// })
-
-// // set port, listen for requests
 const PORT = process.env.PORT || 8081;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
