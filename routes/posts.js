@@ -9,6 +9,8 @@ module.exports = (db) => {
     post_id = req.params.id;
     let select_query = `SELECT favourite FROM posts 
                         WHERE id = $1;`;
+                        
+                       
 
     const values = [post_id];
 
@@ -51,6 +53,8 @@ module.exports = (db) => {
 
   router.get("/", (req, res) => {
     let select_query = `SELECT * FROM posts;`;
+
+  
 
     db.query(select_query)
       .then((data) => {

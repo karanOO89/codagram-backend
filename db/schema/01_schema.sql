@@ -10,14 +10,14 @@ DROP TABLE IF EXISTS fork_posts CASCADE;
 
 
 
-CREATE TABLE users (
-  id SERIAL PRIMARY KEY NOT NULL,
-  name VARCHAR(255) NOT NULL,
-  email VARCHAR(255) NOT NULL,
-  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
-  avatar_url VARCHAR(255) NOT NULL
-);
+-- CREATE TABLE users (
+--   id SERIAL PRIMARY KEY NOT NULL,
+--   name VARCHAR(255) NOT NULL,
+--   email VARCHAR(255) NOT NULL,
+--   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+--   updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
+--   avatar_url VARCHAR(255) NOT NULL
+-- );
 
 CREATE TABLE posts(
   id SERIAL PRIMARY KEY NOT NULL,
@@ -32,6 +32,7 @@ CREATE TABLE posts(
   favourite BOOLEAN DEFAULT NULL,
   total_comments INTEGER,
   parent_post_id INTEGER NULL,
+  trending_comment BOOLEAN DEFAULT FALSE ,
   search_vector TSVECTOR
 );
 
@@ -50,6 +51,7 @@ CREATE TABLE post_comments (
   code TEXT,
   image_url VARCHAR(255),
   votes SMALLINT NOT NULL DEFAULT 0,
+  vote_state BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
@@ -70,6 +72,14 @@ CREATE TABLE dm_rooms (
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
+
+
+-- select post_comments.post_id,post_comments.id,post_comments.votes from post_comments 
+-- join posts on post_id = posts.id
+-- where posts.id=1 and post_comments.votes >= 
+-- (select MAX(post_comments.votes) from post_comments
+-- where post_id = 1);
+
 
 CREATE TABLE messages (
   id SERIAL PRIMARY KEY NOT NULL,
