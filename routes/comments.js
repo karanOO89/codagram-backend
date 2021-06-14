@@ -13,16 +13,16 @@ module.exports = (db) => {
                         (SELECT MAX(post_comments.votes) FROM post_comments
                         WHERE post_comments.post_id = $1)`
     values = [id];
-    db.query(select_query, values)
-      .then((data) => {
-        console.log("rowsssssssssss",(data.rows))
+    // db.query(select_query, values)
+    //   .then((data) => {
+    //     console.log("rowsssssssssss",(data.rows))
 
-        // res.status(200).json(data.rows);
-      })
-      .catch((err) => {
-        console.log("error:", err);
-        res.status(500).json({ error: err.message });
-      });
+    //     // res.status(200).json(data.rows);
+    //   })
+    //   .catch((err) => {
+    //     console.log("error:", err);
+    //     res.status(500).json({ error: err.message });
+    //   });
   });
   router.get("/:id", (req, res) => {
     // console.log("hey")
@@ -92,11 +92,11 @@ module.exports = (db) => {
     const newImagePath = image_path ? JSON.stringify(image_path) : "null";
 
     let query = `INSERT INTO post_comments
-                  (user_id, post_id,comment,code,image_url,votes)
-                  VALUES($1,$2,$3,$4,$5,$6) 
+                  (user_id, post_id,comment,code,image_url)
+                  VALUES($1,$2,$3,$4,$5) 
                   returning *`;
 
-    const values = [1, post_id, comment, code, newImagePath, 5];
+    const values = [2, post_id, comment, code, newImagePath];
 
     db.query(query, values)
       .then((data) => {
@@ -114,7 +114,7 @@ module.exports = (db) => {
     const vote = req.body.vote;
     const vote_state = req.body.vote_state;
     const comment_id = Number(req.params.id);
-
+    
     let query = `UPDATE post_comments 
                  SET votes = $1,vote_state = $3
                  WHERE id = $2
