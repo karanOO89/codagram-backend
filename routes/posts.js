@@ -9,12 +9,10 @@ module.exports = (db) => {
     post_id = req.params.id;
     let select_query = `SELECT favourite FROM posts 
                         WHERE id = $1;`;
-                        
-                       
 
     const values = [post_id];
 
-    db.query(select_query,values)
+    db.query(select_query, values)
       .then((data) => {
         // console.log("rowsssssssssss",(data.rows[0]))
 
@@ -26,10 +24,43 @@ module.exports = (db) => {
       });
   });
 
+  router.put("/:id/favComment", (req, res) => {
+    console.log("hey fav", req.body);
+    console.log(req.params.id);
+    let post_id = req.params.id;
+    console.log("id",post_id)
+    let select_q = `UPDATE posts 
+                        SET trending_comment = 
+                        (SELECT comment 
+                         FROM post_comments 
+                         WHERE votes >=
+                         (SELECT MAX(post_comments.votes) 
+                         FROM post_comments)
+                         AND post_id = $1  
+                         LIMIT 1 
+                         )
+                         WHERE posts.id = $1
+                         RETURNING *                        
+                        ;`;
+
+    const values = [post_id];
+    console.log(values)
+    db.query(select_q, values)
+      .then((data) => {
+        console.log("rowssssscommenstssssss", data.rows);
+        res.status(200).json(data.rows[0]["trending_comment"]);
+      })
+      .catch((err) => {
+        console.log("error:", err);
+        res.status(500).json({ error: err.message });
+      });
+  });
+
+
   router.put("/:id/fav", (req, res) => {
     console.log("hey", req.body);
     console.log(req.params.id);
-    post_id = req.params.id;
+    let post_id = req.params.id;
     fav_val = req.body.status;
 
     let select_query = `UPDATE posts 
@@ -41,8 +72,7 @@ module.exports = (db) => {
 
     db.query(select_query, values)
       .then((data) => {
-        // console.log("rowsssssssssss", data.rows[0]);
-
+        console.log("rowsssssssssss", data.rows);
         res.status(200).json(data.rows);
       })
       .catch((err) => {
@@ -52,13 +82,11 @@ module.exports = (db) => {
   });
 
   router.get("/", (req, res) => {
-    let select_query = `SELECT * FROM posts;`;
-
-  
+    let select_query = `SELECT posts.* FROM posts;`;
 
     db.query(select_query)
       .then((data) => {
-        // console.log("rowsssssssssss",(data.rows[0]["image_url"]))
+        console.log("rowsssssssssss", data.rows);
 
         res.status(200).json(data.rows);
       })
@@ -123,7 +151,7 @@ module.exports = (db) => {
                   VALUES($1,$2,$3,$4,$5,$6,$7)                  
                   returning *`;
 
-    const values = [1, newImagePath, tags, post, code,redirect_code, 5 ];
+    const values = [1, newImagePath, tags, post, code, redirect_code, 5];
 
     db.query(query, values)
       .then((data) => {

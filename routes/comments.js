@@ -3,27 +3,34 @@ const router = express.Router();
 const path = require("path");
 
 module.exports = (db) => {
+
+
+
   router.get("/:id/favComment", (req, res) => {
-    console.log("hey")
     const id = req.params.id;
     console.log(id)
-    let select_query = `SELECT post_comments.post_id, post_comments.id, post_comments.comment FROM post_comments 
+    let select_query = `SELECT post_comments.post_id, post_comments.id, post_comments.comment ,post_comments.votes 
+                        FROM post_comments 
                         JOIN posts ON post_comments.post_id = posts.id
                         WHERE posts.id = $1 AND post_comments.votes >= 
                         (SELECT MAX(post_comments.votes) FROM post_comments
                         WHERE post_comments.post_id = $1)`
     values = [id];
-    // db.query(select_query, values)
-    //   .then((data) => {
-    //     console.log("rowsssssssssss",(data.rows))
+    db.query(select_query, values)
+      .then((data) => {
+        console.log("rowsssssssssss",(data.rows[0]))
 
-    //     // res.status(200).json(data.rows);
-    //   })
-    //   .catch((err) => {
-    //     console.log("error:", err);
-    //     res.status(500).json({ error: err.message });
-    //   });
+        res.status(200).json(data.rows[0]);
+      })
+      .catch((err) => {
+        console.log("error:", err);
+        res.status(500).json({ error: err.message });
+      });
   });
+
+
+
+
   router.get("/:id", (req, res) => {
     // console.log("hey")
     const id = req.params.id;
@@ -32,7 +39,7 @@ module.exports = (db) => {
     values = [id];
     db.query(select_query, values)
       .then((data) => {
-        // console.log("rowsssssssssss",(data.rows))
+        console.log("rowsssssssssss",(data.rows))
 
         res.status(200).json(data.rows);
       })
@@ -96,7 +103,7 @@ module.exports = (db) => {
                   VALUES($1,$2,$3,$4,$5) 
                   returning *`;
 
-    const values = [2, post_id, comment, code, newImagePath];
+    const values = [1, post_id, comment, code, newImagePath];
 
     db.query(query, values)
       .then((data) => {

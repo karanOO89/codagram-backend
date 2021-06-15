@@ -32,7 +32,7 @@ CREATE TABLE posts(
   favourite BOOLEAN DEFAULT NULL,
   total_comments INTEGER,
   parent_post_id INTEGER NULL,
-  trending_comment BOOLEAN DEFAULT FALSE ,
+  trending_comment TEXT DEFAULT NULL ,
   search_vector TSVECTOR
 );
 
