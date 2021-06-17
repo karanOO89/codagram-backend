@@ -151,7 +151,7 @@ module.exports = (db) => {
                   VALUES($1,$2,$3,$4,$5,$6,$7)                  
                   returning *`;
 
-    const values = [1, newImagePath, tags, post, code, redirect_code, 5];
+    const values = [2, newImagePath, tags, post, code, redirect_code, 5];
 
     db.query(query, values)
       .then((data) => {
