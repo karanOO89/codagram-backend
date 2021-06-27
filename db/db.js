@@ -1,5 +1,4 @@
-
-const pg = require('pg');
+const pg = require("pg");
 const Client = pg.Client;
 
 let dbParams = {};
@@ -11,15 +10,14 @@ if (process.env.DATABASE_URL) {
     port: process.env.DB_PORT,
     user: process.env.DB_USER,
     password: process.env.DB_PASS,
-    database: process.env.DB_NAME
+    database: process.env.DB_NAME,
   };
 
   const client = new Client(dbParams);
 
   client.connect(() => {
-    console.log('connected to database');
+    console.log("connected to database");
   });
 }
 
 module.exports = dbParams;
-
